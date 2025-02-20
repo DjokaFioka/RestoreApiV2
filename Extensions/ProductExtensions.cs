@@ -25,8 +25,7 @@ namespace RestoreApiV2.Extensions
             return query.Where(x => x.Name.ToLower().Contains(lowerCaseSearchTerm));
         }
 
-        public static IQueryable<Product> Filter(this IQueryable<Product> query,
-            string? brands, string? types)
+        public static IQueryable<Product> Filter(this IQueryable<Product> query, string? brands, string? types)
         {
             var brandList = new List<string>();
             var typeList = new List<string>();

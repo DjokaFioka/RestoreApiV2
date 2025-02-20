@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using RestoreApiV2.Entities;
 
 namespace RestoreApiV2.Data
@@ -12,12 +13,39 @@ namespace RestoreApiV2.Data
             var context = scope.ServiceProvider.GetRequiredService<StoreContext>()
                 ?? throw new InvalidOperationException("Failed to retrieve store context");
 
-            SeedData(context);
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>()
+                ?? throw new InvalidOperationException("Failed to retrieve user manager");
+
+            //context.Products.ExecuteDelete();
+            SeedData(context, userManager);
         }
 
-        private static void SeedData(StoreContext context)
+        private static async void SeedData(StoreContext context, UserManager<User> userManager)
         {
             context.Database.Migrate();
+
+            if (!userManager.Users.Any())
+            {
+                var user = new User
+                {
+                    UserName = "bob@test.com",
+                    Email = "bob@test.com"
+                };
+
+                await userManager.CreateAsync(user, "Pa$$w0rd");
+                await userManager.AddToRoleAsync(user, "Member");
+
+                var admin = new User
+                {
+                    UserName = "admin@test.com",
+                    Email = "admin@test.com"
+                };
+
+                await userManager.CreateAsync(admin, "Pa$$w0rd");
+                await userManager.AddToRolesAsync(admin, ["Member", "Admin"]);
+
+            }
+
 
             if (context.Products.Any()) return;
 
@@ -199,6 +227,16 @@ namespace RestoreApiV2.Data
                 PictureUrl = "/images/products/boot-ang1.png",
                 Brand = "Angular",
                 Type = "Boots",
+                QuantityInStock = 100
+            },
+            new() {
+                Name = "Plave čizme Đ",
+                Description =
+                    "Eyeliner Essence Eyebrow designer 02 - olovka za obrve",
+                Price = 18000,
+                PictureUrl = @"http://staticfiles.omnimobile.rs/MP_Demo/1/1.jpg",
+                Brand = @"Nešto sa slovom Đ i \/",
+                Type = "Čizme",
                 QuantityInStock = 100
             }
         };
