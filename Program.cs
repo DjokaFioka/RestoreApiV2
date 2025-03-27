@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using RestoreApiV2.Data;
 using RestoreApiV2.Entities;
 using RestoreApiV2.Middleware;
+using RestoreApiV2.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ builder.Services.AddDbContext<StoreContext>(opt =>
 });
 builder.Services.AddCors();
 builder.Services.AddTransient<ExceptionMiddleware>();
+builder.Services.AddScoped<PaymentsService>();
 builder.Services.AddIdentityApiEndpoints<User>(opt =>
 {
     opt.User.RequireUniqueEmail = true;

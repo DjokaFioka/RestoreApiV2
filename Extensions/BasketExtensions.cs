@@ -1,4 +1,5 @@
-﻿using RestoreApiV2.DTOs;
+﻿using Microsoft.EntityFrameworkCore;
+using RestoreApiV2.DTOs;
 using RestoreApiV2.Entities;
 
 namespace RestoreApiV2.Extensions
@@ -10,6 +11,8 @@ namespace RestoreApiV2.Extensions
             return new BasketDto
             {
                 BasketId = basket.BasketId,
+                ClientSecret = basket.ClientSecret,
+                PaymentIntentId = basket.PaymentIntentId,
                 Items = basket.Items.Select(x => new BasketItemDto
                 {
                     ProductId = x.ProductId,
@@ -21,6 +24,16 @@ namespace RestoreApiV2.Extensions
                     Quantity = x.Quantity
                 }).ToList()
             };
+        }
+
+        public static async Task<Basket> GetBasketWithItems(this IQueryable<Basket> query,
+         string? basketId)
+        {
+            return await query
+                .Include(x => x.Items)
+                .ThenInclude(x => x.Product)
+                .FirstOrDefaultAsync(x => x.BasketId == basketId)
+                    ?? throw new Exception("Cannot get basket");
         }
     }
 }
