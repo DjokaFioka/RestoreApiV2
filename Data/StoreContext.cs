@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using RestoreApiV2.Entities;
+using RestoreApiV2.Entities.OrderAggregate;
 
 namespace RestoreApiV2.Data
 {
@@ -9,6 +10,7 @@ namespace RestoreApiV2.Data
     {
         public required DbSet<Product> Products { get; set; }
         public required DbSet<Basket> Baskets { get; set; }
+        public required DbSet<Order> Orders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -7,6 +7,11 @@ using RestoreApiV2.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Optional: Customize logging
+builder.Logging.ClearProviders();            // Clears default providers (optional)
+builder.Logging.AddConsole();                // Adds console output
+builder.Logging.SetMinimumLevel(LogLevel.Debug);
+
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddDbContext<StoreContext>(opt =>
@@ -24,6 +29,9 @@ builder.Services.AddIdentityApiEndpoints<User>(opt =>
     .AddEntityFrameworkStores<StoreContext>();
 
 var app = builder.Build();
+
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+logger.LogInformation("?? Program starting up...");
 
 //Middleware
 // Configure the HTTP request pipeline.
