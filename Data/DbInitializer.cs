@@ -6,7 +6,7 @@ namespace RestoreApiV2.Data
 {
     public class DbInitializer
     {
-        public static void InitDb(WebApplication app)
+        public static async Task InitDb(WebApplication app)
         {
             using var scope = app.Services.CreateScope();
 
@@ -17,10 +17,10 @@ namespace RestoreApiV2.Data
                 ?? throw new InvalidOperationException("Failed to retrieve user manager");
 
             //context.Products.ExecuteDelete();
-            SeedData(context, userManager);
+            await SeedData(context, userManager);
         }
 
-        private static async void SeedData(StoreContext context, UserManager<User> userManager)
+        private static async Task SeedData(StoreContext context, UserManager<User> userManager)
         {
             context.Database.Migrate();
 
